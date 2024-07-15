@@ -1,3 +1,9 @@
+#![deny(missing_docs)]
+//! This crate provides a single function [`started_by_explorer`]
+//!
+//! [`started_by_explorer`] can be used to check if a windows executable was launched
+//! by double clicking on the executable or if instead in was launched from the terminal
+
 #[cfg(target_os = "windows")]
 mod launch_check {
     use std::{
@@ -36,6 +42,9 @@ mod launch_check {
         Ok(process.th32ParentProcessID)
     }
 
+    /// returns [`bool`]:
+    /// - [`true`] if the executable was launched with a double click
+    /// - [`false`] if the executable was launched from the terminal
     pub fn started_by_explorer() -> bool {
         match get_process_entry(get_parent_pid(id()).unwrap()) {
             Ok(proc_entry) => {
@@ -44,7 +53,6 @@ mod launch_check {
                         &proc_entry.szExeFile,
                     ))
                 } {
-                    println!("{exe:?}");
                     exe.to_str().unwrap_or("") == "explorer.exe"
                 } else {
                     false
@@ -57,6 +65,9 @@ mod launch_check {
 
 #[cfg(not(target_os = "windows"))]
 mod launch_check {
+    /// returns [`bool`]:
+    /// on systems different from Windows this function always returns [`false`]
+    /// open an issue with a proposal if you are interested in the feature
     pub fn started_by_explorer() -> bool {
         false
     }
