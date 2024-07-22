@@ -48,11 +48,11 @@ mod launch_check {
     pub fn started_by_explorer() -> bool {
         match get_process_entry(get_parent_pid(id()).unwrap()) {
             Ok(proc_entry) => {
-                if let Ok(exe) = unsafe {
-                    CStr::from_bytes_until_nul(transmute::<&[i8; 260], &[u8; 260]>(
-                        &proc_entry.szExeFile,
-                    ))
-                } {
+                let maybe_exe = unsafe {
+                    let u8_str = transmute::<&[i8; 260], &[u8; 260]>(&proc_entry.szExeFile);
+                    CStr::from_bytes_until_nul(u8_str)
+                };
+                if let Ok(exe) = maybe_exe {
                     exe.to_str().unwrap_or("") == "explorer.exe"
                 } else {
                     false
