@@ -6,15 +6,25 @@ on:
       - main
 
 jobs:
-  miri:
-    name: "Miri"
-    runs-on: windows-latest
+  # at the moment miri can't check Process32Next and CreateToolhelp32Snapshot system calls
+  # miri:
+  #   name: "Miri"
+  #   runs-on: windows-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Install Miri
+  #       run: |
+  #         rustup toolchain install nightly --component miri
+  #         rustup override set nightly
+  #         cargo miri setup
+  #     - name: Test with Miri
+  #       run: cargo miri test
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Install Miri
-        run: |
-          rustup toolchain install nightly --component miri
-          rustup override set nightly
-          cargo miri setup
-      - name: Test with Miri
-        run: cargo miri test
+      - name: Test
+        run: cargo test
