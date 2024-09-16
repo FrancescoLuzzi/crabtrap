@@ -74,3 +74,12 @@ mod launch_check {
 }
 
 pub use launch_check::*;
+
+#[cfg(test)]
+mod test {
+    use super::started_by_explorer;
+    #[test]
+    fn test_started_by_explorer() {
+        assert!(!started_by_explorer());
+    }
+}
