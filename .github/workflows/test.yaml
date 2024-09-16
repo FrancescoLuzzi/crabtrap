@@ -1,8 +1,8 @@
-name: check miri
+name: test
 on:
   workflow_dispatch:
   push:
-    branch:
+    branches:
       - main
 
 jobs:
