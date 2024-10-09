@@ -2,6 +2,13 @@
 name = "crabtrap"
 version = "0.1.0"
 edition = "2021"
+description = "Detect whether your app was launched from the terminal or from explorer/PowerToys in Windows"
+homepage = "https://github.com/FrancescoLuzzi/crabtrap"
+repository = "https://github.com/FrancescoLuzzi/crabtrap"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+keywords = ["windows", "terminal", "application"]
+categories = ["command-line-interface"]
 
 [lib]
 path = "src/lib.rs"
