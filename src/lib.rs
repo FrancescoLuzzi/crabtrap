@@ -2,7 +2,7 @@
 //! This crate provides a single function [`started_by_explorer`]
 //!
 //! [`started_by_explorer`] can be used to check if a windows executable was launched
-//! by double clicking on the executable or if instead in was launched from the terminal
+//! by double clicking on the executable or from "PowerToys Run" or, instead, if it was launched from the terminal
 
 #[cfg(target_os = "windows")]
 mod launch_check {
@@ -19,6 +19,8 @@ mod launch_check {
             TH32CS_SNAPPROCESS,
         },
     };
+
+    const KNOWN_LAUNCHERS: [&str; 2] = ["explorer.exe", "PowerToys.PowerLauncher.exe"];
 
     fn get_process_entry(pid: u32) -> core::Result<PROCESSENTRY32> {
         unsafe {
@@ -43,7 +45,7 @@ mod launch_check {
     }
 
     /// returns [`bool`]:
-    /// - [`true`] if the executable was launched with a double click
+    /// - [`true`] if the executable was launched with a double click or flow "PowerToys Run"
     /// - [`false`] if the executable was launched from the terminal
     pub fn started_by_explorer() -> bool {
         match get_process_entry(get_parent_pid(id()).unwrap()) {
@@ -53,7 +55,8 @@ mod launch_check {
                     CStr::from_bytes_until_nul(u8_str)
                 };
                 if let Ok(exe) = maybe_exe {
-                    exe.to_str().unwrap_or("") == "explorer.exe"
+                    let exe = exe.to_str().unwrap_or("");
+                    KNOWN_LAUNCHERS.iter().any(|&launcher| launcher == exe)
                 } else {
                     false
                 }
